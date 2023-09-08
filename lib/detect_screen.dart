@@ -17,7 +17,7 @@ class DetectScreen extends StatefulWidget {
 }
 
 class _DetectScreenState extends State<DetectScreen> {
-  dynamic? _mostProminentRecognition;
+  dynamic _mostProminentRecognition;
   int _imageHeight = 0;
   int _imageWidth = 0;
 

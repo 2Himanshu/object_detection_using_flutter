@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
@@ -7,8 +5,28 @@ import 'package:object_detection/detect_screen.dart';
 
 import 'models.dart';
 
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(fontFamily: 'Roboto-Medium', fontSize: 18),
+          titleLarge: TextStyle(fontFamily: 'Roboto-Bold', fontSize: 24),
+        ),
+      ),
+      home: HomePage(),
+    );
+  }
+}
+
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -49,7 +67,6 @@ class _HomePageState extends State<HomePage> {
             model: "assets/ssd_mobilenet.tflite",
             labels: "assets/ssd_mobilenet.txt");
     }
-    log("$res");
   }
 
   onSelect(model) {
@@ -64,32 +81,118 @@ class _HomePageState extends State<HomePage> {
     try {
       cameras = await availableCameras();
     } on CameraException catch (e) {
-      log('Error: $e.code\nError Message: $e.message');
+      // Handle camera error here
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Object Detection App',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        centerTitle: true,
+      ),
       body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GridView.builder(
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 16.0,
+                    crossAxisSpacing: 16.0,
+                  ),
+                  itemCount: 4,
+                  itemBuilder: (BuildContext context, int index) {
+                    String modelName = '';
+                    IconData modelIcon = Icons.camera;
+
+                    switch (index) {
+                      case 0:
+                        modelName = ssd;
+                        break;
+                      case 1:
+                        modelName = yolo;
+                        modelIcon = Icons.camera_alt;
+                        break;
+                      case 2:
+                        modelName = mobilenet;
+                        break;
+                      case 3:
+                        modelName = posenet;
+                        break;
+                    }
+
+                    return GridItem(
+                      model: modelName,
+                      modelIcon: modelIcon,
+                      onSelect: () => onSelect(modelName),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      backgroundColor: Colors.white,
+    );
+  }
+}
+
+class GridItem extends StatelessWidget {
+  final String model;
+  final IconData modelIcon;
+  final Function onSelect;
+
+  const GridItem(
+      {Key? key,
+      required this.model,
+      required this.modelIcon,
+      required this.onSelect});
+
+  @override
+  Widget build(BuildContext context) {
+    Color pastelColor = Colors.purple[100]!;
+
+    return InkWell(
+      onTap: () => onSelect(),
+      child: Container(
+        decoration: BoxDecoration(
+          color: pastelColor,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              child: const Text(ssd),
-              onPressed: () => onSelect(ssd),
+          children: [
+            Icon(
+              modelIcon,
+              size: 36,
+              color: Colors.white,
             ),
-            ElevatedButton(
-              child: const Text(yolo),
-              onPressed: () => onSelect(yolo),
-            ),
-            ElevatedButton(
-              child: const Text(mobilenet),
-              onPressed: () => onSelect(mobilenet),
-            ),
-            ElevatedButton(
-              child: const Text(posenet),
-              onPressed: () => onSelect(posenet),
+            const SizedBox(height: 8),
+            Text(
+              model,
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontFamily: 'Roboto-Medium',
+              ),
             ),
           ],
         ),
