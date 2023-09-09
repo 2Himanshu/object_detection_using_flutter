@@ -1,0 +1,6 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "files.autoSave": "afterDelay",
+  "dart.flutterSdkPath": "/home/arshnirmal/flutter37/flutter/",
+  "java.jdt.ls.java.home": "/usr/lib/jvm/jdk-17-oracle-x64"
+}

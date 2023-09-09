@@ -7,28 +7,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'test.dart';
 import 'models.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(fontFamily: 'Roboto-Medium', fontSize: 18),
-          titleLarge: TextStyle(fontFamily: 'Roboto-Bold', fontSize: 24),
-        ),
-      ),
-      home: HomePage(),
-    );
-  }
-}
-
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -88,7 +68,7 @@ class _HomePageState extends State<HomePage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TestWidget(),
+            builder: (context) => const TestWidget(),
           ),
         );
         break;
@@ -115,7 +95,7 @@ class _HomePageState extends State<HomePage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TestWidget(),
+          builder: (context) => const TestWidget(),
         ),
       );
       return;
@@ -149,7 +129,7 @@ class _HomePageState extends State<HomePage> {
   setupCameras() async {
     try {
       cameras = await availableCameras();
-    } on CameraException catch (e) {
+    } on CameraException {
       // Handle camera error here
       Fluttertoast.showToast(
         msg: "Camera initialization failed",
@@ -187,7 +167,7 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(70.0),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -196,7 +176,6 @@ class _HomePageState extends State<HomePage> {
                     shrinkWrap: true,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 1,
-                    
                       mainAxisSpacing: 16.0,
                       crossAxisSpacing: 16.0,
                     ),
@@ -214,12 +193,12 @@ class _HomePageState extends State<HomePage> {
                           modelName = posenet;
                           modelIcon = Icons.sos;
                           break;
-                        case 2:
-                          modelName = mobilenet;
-                          break;
-                        case 3:
-                          modelName = posenet;
-                          break;
+                        // case 2:
+                        //   modelName = mobilenet;
+                        //   break;
+                        // case 3:
+                        //   modelName = posenet;
+                        //   break;
                       }
 
                       return GridItem(
@@ -245,11 +224,7 @@ class GridItem extends StatelessWidget {
   final IconData modelIcon;
   final Function onSelect;
 
-  const GridItem(
-      {Key? key,
-      required this.model,
-      required this.modelIcon,
-      required this.onSelect});
+  const GridItem({super.key, required this.model, required this.modelIcon, required this.onSelect});
 
   @override
   Widget build(BuildContext context) {
@@ -257,39 +232,37 @@ class GridItem extends StatelessWidget {
 
     return InkWell(
       onTap: () => onSelect(),
-      child: Expanded(
-        child: Container(
-          decoration: BoxDecoration(
-            color: pastelColor,
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 2,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                modelIcon,
-                size: 36,
+      child: Container(
+        decoration: BoxDecoration(
+          color: pastelColor,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              modelIcon,
+              size: 36,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              model,
+              style: const TextStyle(
+                fontSize: 18,
                 color: Colors.white,
+                fontFamily: 'Roboto-Medium',
               ),
-              const SizedBox(height: 8),
-              Text(
-                model,
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  fontFamily: 'Roboto-Medium',
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
