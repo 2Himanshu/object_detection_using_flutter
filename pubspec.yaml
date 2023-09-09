@@ -67,6 +67,7 @@ flutter:
   assets:
     - assets/yolov2_tiny.tflite
     - assets/yolov2_tiny.txt
+    - assets/
 
   fonts:
     - family: Roboto
