@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'VisionMate',
+            'VisionMatee',
             style: Theme.of(context).textTheme.titleLarge,
           ),
           centerTitle: true,
