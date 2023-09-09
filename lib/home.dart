@@ -195,22 +195,23 @@ class _HomePageState extends State<HomePage> {
                   GridView.builder(
                     shrinkWrap: true,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
+                      crossAxisCount: 1,
                       mainAxisSpacing: 16.0,
                       crossAxisSpacing: 16.0,
                     ),
-                    itemCount: 4,
+                    itemCount: 2,
                     itemBuilder: (BuildContext context, int index) {
                       String modelName = '';
                       IconData modelIcon = Icons.camera;
 
                       switch (index) {
                         case 0:
-                          modelName = ssd;
-                          break;
-                        case 1:
                           modelName = yolo;
                           modelIcon = Icons.camera_alt;
+                          break;
+                        case 1:
+                          modelName = posenet;
+                          modelIcon = Icons.sos;
                           break;
                         case 2:
                           modelName = mobilenet;
