@@ -196,6 +196,7 @@ class _HomePageState extends State<HomePage> {
                     shrinkWrap: true,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 1,
+                    
                       mainAxisSpacing: 16.0,
                       crossAxisSpacing: 16.0,
                     ),
@@ -256,37 +257,39 @@ class GridItem extends StatelessWidget {
 
     return InkWell(
       onTap: () => onSelect(),
-      child: Container(
-        decoration: BoxDecoration(
-          color: pastelColor,
-          borderRadius: BorderRadius.circular(10.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              modelIcon,
-              size: 36,
-              color: Colors.white,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              model,
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontFamily: 'Roboto-Medium',
+      child: Expanded(
+        child: Container(
+          decoration: BoxDecoration(
+            color: pastelColor,
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-            ),
-          ],
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                modelIcon,
+                size: 36,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                model,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontFamily: 'Roboto-Medium',
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
