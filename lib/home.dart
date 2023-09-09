@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Object Detection App',
+            'VisionMate',
             style: Theme.of(context).textTheme.titleLarge,
           ),
           centerTitle: true,
