@@ -73,6 +73,9 @@ class _HomePageState extends State<HomePage> {
         );
         break;
 
+      case "Emergency":
+        break;
+
       default:
         break;
     }
@@ -159,10 +162,15 @@ class _HomePageState extends State<HomePage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            'VisionMatee',
-            style: Theme.of(context).textTheme.titleLarge,
+          title: const Text(
+            'VisionMate',
+            style: TextStyle(
+              fontFamily: 'Roboto-Medium',
+              fontSize: 24,
+              color: Colors.white,
+            ),
           ),
+          backgroundColor: Colors.grey[800],
           centerTitle: true,
         ),
         body: Center(
@@ -228,7 +236,7 @@ class GridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color pastelColor = Colors.purple[100]!;
+    Color pastelColor = Colors.grey;
 
     return InkWell(
       onTap: () => onSelect(),

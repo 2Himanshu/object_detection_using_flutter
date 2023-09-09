@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:object_detection/auth/auth_screen.dart';
+import 'package:object_detection/splashscreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'home.dart';
 
@@ -24,15 +25,10 @@ Future<void> main() async {
   );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final User? user = auth.currentUser;
-
   await [Permission.location, Permission.storage].request().then(
     (status) {
       runApp(
-        MaterialApp(
-          home: user == null ? SignInPage() : const MyApp(),
-        ),
+        const MaterialApp(home: SplashScreen()),
       );
     },
   );

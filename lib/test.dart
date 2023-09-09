@@ -14,6 +14,7 @@ class TestWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 235, 88, 78),
@@ -94,7 +95,7 @@ class _SOSbuttonState extends State<SOSbutton> {
     await notificationServices.getDeviceToken().then((value) async {
       var data = {
         'to':
-            'ffK563sHTveOWvan-rOeGM:APA91bGxluCaNRXY0q6xR1wiA_MoRDqrqfk_JTcT59eX_waYThbFmqrzdY3N06iVPhIpGJVPffGFyQ_OQ-glZEC9eU_RDvCLv_oxJsjsFivQ5zQUi5FlCn-idOL50p-mKBfxJcZgIXin',
+            'dPD9oI6TSkyN4N_XCdhSWA:APA91bEhtvfbD3jNr6pSMWUd58ESKXAHdCr_dQi3KWuiGPEIj_WkFoJFzPwZBJ03ukDYcLAjIbn-awgSwISCUJ4v9Idepua3qjx6HQDaq520xD4phfNKDWwYT8m3cZ3Mvp2eH4zHIjrr',
         'notification': {
           'title': 'SOS Alert',
           'body':
@@ -112,7 +113,7 @@ class _SOSbuttonState extends State<SOSbutton> {
       await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'), body: jsonEncode(data), headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization':
-            'key=AAAAZ4OmdM4:APA91bGMJUNsm1Yc_txOzAdfrYRMHB97DTqD7lO7mf1jSutQMKG-MwQVORhbWD5uEIfCIdI9QlgQh3R-P7OWJ3r6ZndcGtvHJ2VP_4FcWudomwAyDweRcnaftgHFBMplVBwt9mHbQUpK',
+            'key=AAAAZ4OmdM4:APA91bFuHnuOLhZ3gha54UK05rGrfcsm-uUUCQvPePBaJDXOyWqql55ag-x0YDwyKgS0C0YKcXRv3efH47UqSmCPqdALRLql7iLUKZj2gLCralKnXDotqrfxynBariSG_bY3xS9Q9Yla',
       }).then((value) {
         if (kDebugMode) {
           print(value.body.toString());
@@ -126,11 +127,17 @@ class _SOSbuttonState extends State<SOSbutton> {
   }
 
   @override
+  void dispose() {
+    
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
         await _sendNotification();
-        await sendLocationToFirestore();
+        // await sendLocationToFirestore();
       },
       child: Container(
         width: 300, // Set the width of the button
