@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:object_detection/detect_screen.dart';
-
+import 'package:alan_voice/alan_voice.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'test.dart';
 import 'models.dart';
 
 void main() {
@@ -33,12 +35,67 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final List<CameraDescription> cameras;
+  late List<CameraDescription> cameras;
+  late CameraController _cameraController;
+  int clickCount = 0;
 
   @override
-  Future<void> didChangeDependencies() async {
-    super.didChangeDependencies();
-    await setupCameras();
+  void initState() {
+    super.initState();
+    _initializeCamera();
+    setUpAlan();
+  }
+
+  _initializeCamera() async {
+    try {
+      cameras = await availableCameras();
+      _cameraController = CameraController(
+        cameras[0], // Choose the desired camera
+        ResolutionPreset.medium, // Adjust the resolution as needed
+      );
+
+      await _cameraController.initialize();
+
+      // Start Alan AI voice interaction after the camera is initialized.
+      setUpAlan();
+    } catch (e) {
+      print("Error initializing camera: $e");
+    }
+  }
+
+  @override
+  void dispose() {
+    // Dispose of the camera controller to release resources
+    _cameraController.dispose();
+    super.dispose();
+  }
+
+  setUpAlan() {
+    AlanVoice.addButton(
+      "34235777417ddd38c73b1d4793692d3f2e956eca572e1d8b807a3e2338fdd0dc/stage", // Replace with your Alan API key
+      buttonAlign: AlanVoice.BUTTON_ALIGN_RIGHT,
+    );
+    AlanVoice.callbacks.add((command) => _handleCmd(command.data));
+  }
+
+  _handleCmd(Map<String, dynamic> res) {
+    switch (res["command"]) {
+      case "Tiny YOLOv2":
+        onSelect("Tiny YOLOv2");
+        break;
+
+      case "SOS Alert":
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TestWidget(),
+          ),
+        );
+        break;
+
+      default:
+        break;
+    }
   }
 
   loadModel(model) async {
@@ -50,31 +107,43 @@ class _HomePageState extends State<HomePage> {
           labels: "assets/yolov2_tiny.txt",
         );
         break;
-
-      case mobilenet:
-        res = await Tflite.loadModel(
-            model: "assets/mobilenet_v1_1.0_224.tflite",
-            labels: "assets/mobilenet_v1_1.0_224.txt");
-        break;
-
-      case posenet:
-        res = await Tflite.loadModel(
-            model: "assets/posenet_mv1_075_float_from_checkpoints.tflite");
-        break;
-
-      default:
-        res = await Tflite.loadModel(
-            model: "assets/ssd_mobilenet.tflite",
-            labels: "assets/ssd_mobilenet.txt");
     }
   }
 
   onSelect(model) {
+    if (model == "SOS Alert") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TestWidget(),
+        ),
+      );
+      return;
+    }
+    Fluttertoast.showToast(
+      msg: model,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
     loadModel(model);
     final route = MaterialPageRoute(builder: (context) {
-      return DetectScreen(cameras: cameras, model: model);
+      return DetectScreen(
+        cameras: cameras,
+        model: model,
+        cameraController: _cameraController,
+      );
     });
     Navigator.of(context).push(route);
+  }
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    await setupCameras();
   }
 
   setupCameras() async {
@@ -82,67 +151,89 @@ class _HomePageState extends State<HomePage> {
       cameras = await availableCameras();
     } on CameraException catch (e) {
       // Handle camera error here
+      Fluttertoast.showToast(
+        msg: "Camera initialization failed",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Object Detection App',
-          style: Theme.of(context).textTheme.titleLarge,
+    return GestureDetector(
+      onTap: () {
+        // Increment the click count when the screen is tapped
+        setState(() {
+          clickCount++;
+          if (clickCount == 3) {
+            // Reset the click count and navigate to the YOLO page
+            clickCount = 0;
+            onSelect(yolo);
+          }
+        });
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Object Detection App',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16.0,
-                    crossAxisSpacing: 16.0,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GridView.builder(
+                    shrinkWrap: true,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 16.0,
+                      crossAxisSpacing: 16.0,
+                    ),
+                    itemCount: 4,
+                    itemBuilder: (BuildContext context, int index) {
+                      String modelName = '';
+                      IconData modelIcon = Icons.camera;
+
+                      switch (index) {
+                        case 0:
+                          modelName = ssd;
+                          break;
+                        case 1:
+                          modelName = yolo;
+                          modelIcon = Icons.camera_alt;
+                          break;
+                        case 2:
+                          modelName = mobilenet;
+                          break;
+                        case 3:
+                          modelName = posenet;
+                          break;
+                      }
+
+                      return GridItem(
+                        model: modelName,
+                        modelIcon: modelIcon,
+                        onSelect: () => onSelect(modelName),
+                      );
+                    },
                   ),
-                  itemCount: 4,
-                  itemBuilder: (BuildContext context, int index) {
-                    String modelName = '';
-                    IconData modelIcon = Icons.camera;
-
-                    switch (index) {
-                      case 0:
-                        modelName = ssd;
-                        break;
-                      case 1:
-                        modelName = yolo;
-                        modelIcon = Icons.camera_alt;
-                        break;
-                      case 2:
-                        modelName = mobilenet;
-                        break;
-                      case 3:
-                        modelName = posenet;
-                        break;
-                    }
-
-                    return GridItem(
-                      model: modelName,
-                      modelIcon: modelIcon,
-                      onSelect: () => onSelect(modelName),
-                    );
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
+        backgroundColor: Colors.white,
       ),
-      backgroundColor: Colors.white,
     );
   }
 }

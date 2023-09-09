@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_tts: ^3.8.2
-  fluttertoast: ^8.0.7
+  fluttertoast: ^8.2.2
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -39,6 +39,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   camera: ^0.10.3+2
   flutter_tflite: ^1.0.1
+  alan_voice: ^4.4.0
 
 dev_dependencies:
   flutter_test:
@@ -66,11 +67,6 @@ flutter:
   assets:
     - assets/yolov2_tiny.tflite
     - assets/yolov2_tiny.txt
-    - assets/ssd_mobilenet.tflite
-    - assets/ssd_mobilenet.txt
-    - assets/mobilenet_v1_1.0_224.tflite
-    - assets/mobilenet_v1_1.0_224.txt
-    - assets/posenet_mv1_075_float_from_checkpoints.tflite
 
   fonts:
     - family: Roboto
