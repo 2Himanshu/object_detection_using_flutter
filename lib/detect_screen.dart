@@ -9,15 +9,16 @@ import 'dart:math' as math;
 class DetectScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
   final String model;
+  final CameraController cameraController; // Add this line
 
-  const DetectScreen({super.key, required this.cameras, required this.model});
+  const DetectScreen({super.key, required this.cameras, required this.model,required this.cameraController});
 
   @override
   State<DetectScreen> createState() => _DetectScreenState();
 }
 
 class _DetectScreenState extends State<DetectScreen> {
-  dynamic? _mostProminentRecognition;
+  dynamic _mostProminentRecognition;
   int _imageHeight = 0;
   int _imageWidth = 0;
 
